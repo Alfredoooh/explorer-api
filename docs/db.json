@@ -1,0 +1,148 @@
+{
+  "highlights": [
+    {
+      "id": "h1",
+      "title": "Economia global em destaque",
+      "summary": "Mercados reagiram a novas políticas económicas.",
+      "image": "https://picsum.photos/seed/hl1/800/450",
+      "url": "https://exemplo.com/destaque-1",
+      "publishedAt": "2025-09-24T00:00:00Z",
+      "sourceId": "s1"
+    },
+    {
+      "id": "h2",
+      "title": "Lançamento tecnológico",
+      "summary": "Nova plataforma revoluciona deploys.",
+      "image": "https://picsum.photos/seed/hl2/800/450",
+      "url": "https://exemplo.com/destaque-2",
+      "publishedAt": "2025-09-23T12:00:00Z",
+      "sourceId": "s2"
+    }
+  ],
+  "news": [
+    {
+      "id": "n1",
+      "title": "Mercados sobem após anúncio",
+      "summary": "Bolsa reage positivamente ao impacto fiscal.",
+      "url": "https://noticias.ex/n1",
+      "image": "https://picsum.photos/seed/n1/800/600",
+      "publishedAt": "2025-09-24T08:00:00Z",
+      "sourceId": "s1"
+    },
+    {
+      "id": "n2",
+      "title": "Nova versão de framework lançada",
+      "summary": "Versão 3.0 traz melhorias de performance.",
+      "url": "https://techtoday.ex/n2",
+      "image": "https://picsum.photos/seed/n2/800/600",
+      "publishedAt": "2025-09-24T07:30:00Z",
+      "sourceId": "s2"
+    },
+    {
+      "id": "n3",
+      "title": "Investigação médica avança",
+      "summary": "Resultados promissores em fase 2.",
+      "url": "https://saude.ex/n3",
+      "image": "https://picsum.photos/seed/n3/800/600",
+      "publishedAt": "2025-09-23T22:10:00Z",
+      "sourceId": "s3"
+    },
+    {
+      "id": "n4",
+      "title": "Desporto: clássico termina empatado",
+      "summary": "Resumo dos melhores momentos.",
+      "url": "https://esportes.ex/n4",
+      "image": "https://picsum.photos/seed/n4/800/600",
+      "publishedAt": "2025-09-23T20:00:00Z",
+      "sourceId": "s4"
+    },
+    {
+      "id": "n5",
+      "title": "Cultura: festival anuncia line-up",
+      "summary": "Artistas confirmados para o evento anual.",
+      "url": "https://cultura.ex/n5",
+      "image": "https://picsum.photos/seed/n5/800/600",
+      "publishedAt": "2025-09-22T18:00:00Z",
+      "sourceId": "s5"
+    }
+  ],
+  "images": [
+    {
+      "id": "img1",
+      "title": "Montanha ao pôr do sol",
+      "url": "https://picsum.photos/seed/img1/1200/800",
+      "thumb": "https://picsum.photos/seed/img1/400/300",
+      "sourceId": "s3"
+    },
+    {
+      "id": "img2",
+      "title": "Cidade à noite",
+      "url": "https://picsum.photos/seed/img2/1200/800",
+      "thumb": "https://picsum.photos/seed/img2/400/300",
+      "sourceId": "s3"
+    },
+    {
+      "id": "img3",
+      "title": "Praia tranquila",
+      "url": "https://picsum.photos/seed/img3/1200/800",
+      "thumb": "https://picsum.photos/seed/img3/400/300",
+      "sourceId": "s3"
+    }
+  ],
+  "sources": [
+    {
+      "id": "s1",
+      "name": "Exemplo News",
+      "url": "https://noticias.ex"
+    },
+    {
+      "id": "s2",
+      "name": "TechToday",
+      "url": "https://techtoday.ex"
+    },
+    {
+      "id": "s3",
+      "name": "Picsum (imagens)",
+      "url": "https://picsum.photos"
+    },
+    {
+      "id": "s4",
+      "name": "Esportes Ex",
+      "url": "https://esportes.ex"
+    },
+    {
+      "id": "s5",
+      "name": "Cultura Ex",
+      "url": "https://cultura.ex"
+    }
+  ],
+  "trending": [
+    {
+      "id": "t1",
+      "topic": "Economia",
+      "score": 92
+    },
+    {
+      "id": "t2",
+      "topic": "IA",
+      "score": 88
+    },
+    {
+      "id": "t3",
+      "topic": "Esportes",
+      "score": 74
+    }
+  ],
+  "likes": {
+    "articles": {
+      "n1": 12,
+      "n2": 5,
+      "n3": 3
+    },
+    "images": {
+      "img1": 4,
+      "img2": 2
+    }
+  },
+  "createdAt": "2025-09-24T00:00:00Z"
+}
