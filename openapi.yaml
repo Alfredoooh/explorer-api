@@ -1,0 +1,49 @@
+openapi: 3.0.1
+info:
+  title: Explorer API (demo)
+  version: "1.0.0"
+paths:
+  /api/v1/highlights:
+    get:
+      summary: Get featured highlights
+      responses:
+        '200':
+          description: OK
+  /api/v1/news:
+    get:
+      summary: List news (supports q,page,limit,source)
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  /api/v1/news/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/v1/images:
+    get:
+      summary: Search/list images
+  /api/v1/search:
+    get:
+      summary: Unified search (q required)
+  /api/v1/like:
+    post:
+      summary: Like an item {type:'article'|'image', id}
