@@ -8,7 +8,7 @@
     "phone": "+244912345678",
     "password": "senha123",
     "access": true,
-    "expires": { "year": 2025, "month": 9, "day": 25, "hours": 23, "minutes": 59 }
+    "expires": { "year": 2025, "month": 9, "day": 26, "hours": 23, "minutes": 59 }
   },
   {
     "username": "autorizado",
@@ -19,6 +19,6 @@
     "phone": "+244987654321",
     "password": "senhaOK",
     "access": true,
-    "expires": { "year": 2025, "month": 9, "day": 25, "hours": 23, "minutes": 59 }
+    "expires": { "year": 2025, "month": 9, "day": 26, "hours": 23, "minutes": 59 }
   }
 ]
