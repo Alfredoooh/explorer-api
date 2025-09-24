@@ -1,0 +1,24 @@
+[
+  {
+    "username": "exemplo1",
+    "fullName": "Exemplo Um",
+    "age": 28,
+    "experience": "Intermediário",
+    "email": "exemplo1@mail.com",
+    "phone": "+244912345678",
+    "password": "senha123",
+    "access": true,
+    "expires": { "year": 2025, "month": 9, "day": 24, "hours": 16, "minutes": 8 }
+  },
+  {
+    "username": "autorizado",
+    "fullName": "Usuario Autorizado",
+    "age": 35,
+    "experience": "Avançado",
+    "email": "aut@ex.com",
+    "phone": "+244987654321",
+    "password": "senhaOK",
+    "access": true,
+    "expires": { "year": 2025, "month": 9, "day": 24, "hours": 16, "minutes": 8 }
+  }
+]
