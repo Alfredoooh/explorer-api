@@ -1,0 +1,11 @@
+{
+  "highlights": [...],
+  "news": [...],
+  "images": [...],
+  "sources": [...],
+  "trending": [...],
+  "likes": {
+    "articles": { "n1": 12 },
+    "images": { "img1": 3 }
+  }
+}
