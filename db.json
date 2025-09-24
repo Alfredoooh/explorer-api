@@ -1,0 +1,382 @@
+{
+  "highlights": [
+    {
+      "id": "h1",
+      "title": "Economia mundial em destaque",
+      "summary": "Mercados reagiram a novas políticas do Trump económicas.",
+      "image": "https://picsum.photos/seed/hl1/800/450",
+      "url": "https://exemplo.com/destaque-1",
+      "publishedAt": "2025-09-24T00:00:00Z",
+      "sourceId": "s1",
+      "category": "economia",
+      "readTime": 5
+    },
+    {
+      "id": "h2",
+      "title": "Lançamento tecnológico",
+      "summary": "Nova plataforma revoluciona deploys.",
+      "image": "https://picsum.photos/seed/hl2/800/450",
+      "url": "https://exemplo.com/destaque-2",
+      "publishedAt": "2025-09-23T12:00:00Z",
+      "sourceId": "s2",
+      "category": "tecnologia",
+      "readTime": 3
+    },
+    {
+      "id": "h3",
+      "title": "Inovação em IA",
+      "summary": "Algoritmos avançados mudam o mercado financeiro.",
+      "image": "https://picsum.photos/seed/hl3/800/450",
+      "url": "https://exemplo.com/destaque-3",
+      "publishedAt": "2025-09-22T15:00:00Z",
+      "sourceId": "s2",
+      "category": "tecnologia",
+      "readTime": 4
+    },
+    {
+      "id": "h4",
+      "title": "Crise energética global",
+      "summary": "Países estudam novas fontes sustentáveis.",
+      "image": "https://picsum.photos/seed/hl4/800/450",
+      "url": "https://exemplo.com/destaque-4",
+      "publishedAt": "2025-09-21T10:00:00Z",
+      "sourceId": "s1",
+      "category": "meio-ambiente",
+      "readTime": 6
+    },
+    {
+      "id": "h5",
+      "title": "Breakthrough em medicina regenerativa",
+      "summary": "Cientistas conseguem regenerar tecidos humanos usando células-tronco.",
+      "image": "https://picsum.photos/seed/hl5/800/450",
+      "url": "https://exemplo.com/destaque-5",
+      "publishedAt": "2025-09-20T14:30:00Z",
+      "sourceId": "s3",
+      "category": "saude",
+      "readTime": 7
+    },
+    {
+      "id": "h6",
+      "title": "Exploração espacial: missão a Marte",
+      "summary": "Nova missão pretende estabelecer colónia permanente no planeta vermelho.",
+      "image": "https://picsum.photos/seed/hl6/800/450",
+      "url": "https://exemplo.com/destaque-6",
+      "publishedAt": "2025-09-19T09:00:00Z",
+      "sourceId": "s6",
+      "category": "ciencia",
+      "readTime": 8
+    }
+  ],
+  "news": [
+    {
+      "id": "n1",
+      "title": "Mercados sobem após anúncio",
+      "summary": "Bolsa reage positivamente ao impacto fiscal.",
+      "url": "https://noticias.ex/n1",
+      "image": "https://picsum.photos/seed/n1/800/600",
+      "publishedAt": "2025-09-24T08:00:00Z",
+      "sourceId": "s1",
+      "category": "economia",
+      "tags": ["bolsa", "fiscal", "mercados"],
+      "author": "Maria Silva",
+      "readTime": 3
+    },
+    {
+      "id": "n2",
+      "title": "Nova versão de framework lançada",
+      "summary": "Versão 3.0 traz melhorias de performance.",
+      "url": "https://techtoday.ex/n2",
+      "image": "https://picsum.photos/seed/n2/800/600",
+      "publishedAt": "2025-09-24T07:30:00Z",
+      "sourceId": "s2",
+      "category": "tecnologia",
+      "tags": ["framework", "performance", "desenvolvimento"],
+      "author": "João Santos",
+      "readTime": 2
+    },
+    {
+      "id": "n3",
+      "title": "Investigação médica avança",
+      "summary": "Resultados promissores em fase 2.",
+      "url": "https://saude.ex/n3",
+      "image": "https://picsum.photos/seed/n3/800/600",
+      "publishedAt": "2025-09-23T22:10:00Z",
+      "sourceId": "s3",
+      "category": "saude",
+      "tags": ["medicina", "investigação", "fase2"],
+      "author": "Dr. Ana Costa",
+      "readTime": 4
+    },
+    {
+      "id": "n4",
+      "title": "Desporto: clássico termina empatado",
+      "summary": "Resumo dos melhores momentos.",
+      "url": "https://esportes.ex/n4",
+      "image": "https://picsum.photos/seed/n4/800/600",
+      "publishedAt": "2025-09-23T20:00:00Z",
+      "sourceId": "s4",
+      "category": "desporto",
+      "tags": ["futebol", "clássico", "empate"],
+      "author": "Pedro Lima",
+      "readTime": 2
+    },
+    {
+      "id": "n5",
+      "title": "Cultura: festival anuncia line-up",
+      "summary": "Artistas confirmados para o evento anual.",
+      "url": "https://cultura.ex/n5",
+      "image": "https://picsum.photos/seed/n5/800/600",
+      "publishedAt": "2025-09-22T18:00:00Z",
+      "sourceId": "s5",
+      "category": "cultura",
+      "tags": ["festival", "música", "lineup"],
+      "author": "Sofia Mendes",
+      "readTime": 3
+    },
+    {
+      "id": "n6",
+      "title": "Economia: inflação estabiliza",
+      "summary": "Dados do último trimestre mostram tendência positiva.",
+      "url": "https://noticias.ex/n6",
+      "image": "https://picsum.photos/seed/n6/800/600",
+      "publishedAt": "2025-09-22T16:00:00Z",
+      "sourceId": "s1",
+      "category": "economia",
+      "tags": ["inflação", "trimestre", "dados"],
+      "author": "Carlos Pereira",
+      "readTime": 4
+    },
+    {
+      "id": "n7",
+      "title": "Tecnologia: gadgets inovadores",
+      "summary": "Apresentação de novos dispositivos na feira anual.",
+      "url": "https://techtoday.ex/n7",
+      "image": "https://picsum.photos/seed/n7/800/600",
+      "publishedAt": "2025-09-22T14:30:00Z",
+      "sourceId": "s2",
+      "category": "tecnologia",
+      "tags": ["gadgets", "feira", "inovação"],
+      "author": "Ricardo Alves",
+      "readTime": 5
+    },
+    {
+      "id": "n8",
+      "title": "Saúde: nova vacina aprovada",
+      "summary": "Autoridades liberam vacina experimental.",
+      "url": "https://saude.ex/n8",
+      "image": "https://picsum.photos/seed/n8/800/600",
+      "publishedAt": "2025-09-21T20:00:00Z",
+      "sourceId": "s3",
+      "category": "saude",
+      "tags": ["vacina", "aprovação", "autoridades"],
+      "author": "Dr. Manuel Rodrigues",
+      "readTime": 3
+    },
+    {
+      "id": "n9",
+      "title": "Ambiente: nova reserva marinha criada",
+      "summary": "Governo estabelece maior área de conservação oceânica do país.",
+      "url": "https://ambiente.ex/n9",
+      "image": "https://picsum.photos/seed/n9/800/600",
+      "publishedAt": "2025-09-21T15:45:00Z",
+      "sourceId": "s7",
+      "category": "meio-ambiente",
+      "tags": ["conservação", "oceano", "reserva"],
+      "author": "Helena Martins",
+      "readTime": 6
+    },
+    {
+      "id": "n10",
+      "title": "Educação: reforma no ensino superior",
+      "summary": "Novas diretrizes visam modernizar currículos universitários.",
+      "url": "https://educacao.ex/n10",
+      "image": "https://picsum.photos/seed/n10/800/600",
+      "publishedAt": "2025-09-20T11:20:00Z",
+      "sourceId": "s8",
+      "category": "educacao",
+      "tags": ["universidade", "currículo", "reforma"],
+      "author": "Prof. António Ferreira",
+      "readTime": 5
+    },
+    {
+      "id": "n11",
+      "title": "Cinema: festival internacional anunciado",
+      "summary": "Evento promete trazer grandes produções mundiais.",
+      "url": "https://cinema.ex/n11",
+      "image": "https://picsum.photos/seed/n11/800/600",
+      "publishedAt": "2025-09-19T16:30:00Z",
+      "sourceId": "s9",
+      "category": "cultura",
+      "tags": ["cinema", "festival", "internacional"],
+      "author": "Beatriz Oliveira",
+      "readTime": 4
+    },
+    {
+      "id": "n12",
+      "title": "Startup revoluciona entrega de medicamentos",
+      "summary": "Drones autónomos entregam remédios em áreas rurais.",
+      "url": "https://startup.ex/n12",
+      "image": "https://picsum.photos/seed/n12/800/600",
+      "publishedAt": "2025-09-18T13:15:00Z",
+      "sourceId": "s10",
+      "category": "tecnologia",
+      "tags": ["startup", "drone", "medicamentos"],
+      "author": "Miguel Torres",
+      "readTime": 3
+    }
+  ],
+  "images": [
+    {"id":"img1","title":"Montanha ao pôr do sol","url":"https://picsum.photos/seed/img1/1200/800","thumb":"https://picsum.photos/seed/img1/400/300","sourceId":"s3","category":"natureza","uploadedAt":"2025-09-24T10:00:00Z"},
+    {"id":"img2","title":"Cidade à noite","url":"https://picsum.photos/seed/img2/1200/800","thumb":"https://picsum.photos/seed/img2/400/300","sourceId":"s3","category":"urbano","uploadedAt":"2025-09-23T14:30:00Z"},
+    {"id":"img3","title":"Praia tranquila","url":"https://picsum.photos/seed/img3/1200/800","thumb":"https://picsum.photos/seed/img3/400/300","sourceId":"s3","category":"natureza","uploadedAt":"2025-09-22T09:15:00Z"},
+    {"id":"img4","title":"Floresta verde","url":"https://picsum.photos/seed/img4/1200/800","thumb":"https://picsum.photos/seed/img4/400/300","sourceId":"s3","category":"natureza","uploadedAt":"2025-09-21T16:45:00Z"},
+    {"id":"img5","title":"Cidade futurista","url":"https://picsum.photos/seed/img5/1200/800","thumb":"https://picsum.photos/seed/img5/400/300","sourceId":"s2","category":"tecnologia","uploadedAt":"2025-09-20T12:20:00Z"},
+    {"id":"img6","title":"Laboratório de pesquisa","url":"https://picsum.photos/seed/img6/1200/800","thumb":"https://picsum.photos/seed/img6/400/300","sourceId":"s3","category":"ciencia","uploadedAt":"2025-09-19T08:00:00Z"},
+    {"id":"img7","title":"Estádio lotado","url":"https://picsum.photos/seed/img7/1200/800","thumb":"https://picsum.photos/seed/img7/400/300","sourceId":"s4","category":"desporto","uploadedAt":"2025-09-18T19:30:00Z"},
+    {"id":"img8","title":"Arte contemporânea","url":"https://picsum.photos/seed/img8/1200/800","thumb":"https://picsum.photos/seed/img8/400/300","sourceId":"s5","category":"cultura","uploadedAt":"2025-09-17T11:00:00Z"},
+    {"id":"img9","title":"Energia solar","url":"https://picsum.photos/seed/img9/1200/800","thumb":"https://picsum.photos/seed/img9/400/300","sourceId":"s7","category":"meio-ambiente","uploadedAt":"2025-09-16T15:20:00Z"},
+    {"id":"img10","title":"Campus universitário","url":"https://picsum.photos/seed/img10/1200/800","thumb":"https://picsum.photos/seed/img10/400/300","sourceId":"s8","category":"educacao","uploadedAt":"2025-09-15T10:40:00Z"}
+  ],
+  "sources": [
+    {"id":"s1","name":"Exemplo News","url":"https://noticias.ex","category":"geral","verified":true,"followers":125000},
+    {"id":"s2","name":"TechToday","url":"https://techtoday.ex","category":"tecnologia","verified":true,"followers":89000},
+    {"id":"s3","name":"Saúde Moderna","url":"https://saude.ex","category":"saude","verified":true,"followers":67000},
+    {"id":"s4","name":"Esportes Ex","url":"https://esportes.ex","category":"desporto","verified":true,"followers":156000},
+    {"id":"s5","name":"Cultura Ex","url":"https://cultura.ex","category":"cultura","verified":true,"followers":78000},
+    {"id":"s6","name":"Cosmos Daily","url":"https://cosmos.ex","category":"ciencia","verified":true,"followers":45000},
+    {"id":"s7","name":"Planeta Verde","url":"https://ambiente.ex","category":"meio-ambiente","verified":true,"followers":92000},
+    {"id":"s8","name":"Educar+","url":"https://educacao.ex","category":"educacao","verified":true,"followers":34000},
+    {"id":"s9","name":"Cinema World","url":"https://cinema.ex","category":"cultura","verified":true,"followers":58000},
+    {"id":"s10","name":"Startup Hub","url":"https://startup.ex","category":"tecnologia","verified":false,"followers":23000}
+  ],
+  "trending": [
+    {"id":"t1","topic":"Economia","score":92,"change":"+5"},
+    {"id":"t2","topic":"IA","score":88,"change":"+12"},
+    {"id":"t3","topic":"Esportes","score":74,"change":"-3"},
+    {"id":"t4","topic":"Cultura","score":65,"change":"+8"},
+    {"id":"t5","topic":"Tecnologia","score":80,"change":"+2"},
+    {"id":"t6","topic":"Saúde","score":71,"change":"+15"},
+    {"id":"t7","topic":"Meio Ambiente","score":69,"change":"+6"},
+    {"id":"t8","topic":"Educação","score":52,"change":"+1"},
+    {"id":"t9","topic":"Ciência","score":61,"change":"+9"},
+    {"id":"t10","topic":"Política","score":76,"change":"-7"}
+  ],
+  "categories": [
+    {"id":"economia","name":"Economia","color":"#2563eb","icon":"trend-up"},
+    {"id":"tecnologia","name":"Tecnologia","color":"#7c3aed","icon":"cpu"},
+    {"id":"saude","name":"Saúde","color":"#dc2626","icon":"heart"},
+    {"id":"desporto","name":"Desporto","color":"#16a34a","icon":"activity"},
+    {"id":"cultura","name":"Cultura","color":"#ea580c","icon":"palette"},
+    {"id":"ciencia","name":"Ciência","color":"#0891b2","icon":"microscope"},
+    {"id":"meio-ambiente","name":"Meio Ambiente","color":"#65a30d","icon":"leaf"},
+    {"id":"educacao","name":"Educação","color":"#9333ea","icon":"graduation-cap"},
+    {"id":"politica","name":"Política","color":"#be185d","icon":"building"}
+  ],
+  "likes": {
+    "articles": {"n1":12,"n2":5,"n3":3,"n4":2,"n5":1,"n6":8,"n7":15,"n8":6,"n9":22,"n10":4,"n11":9,"n12":11},
+    "images": {"img1":4,"img2":2,"img3":3,"img4":7,"img5":12,"img6":5,"img7":18,"img8":3,"img9":14,"img10":6},
+    "highlights": {"h1":45,"h2":32,"h3":28,"h4":51,"h5":67,"h6":89}
+  },
+  "comments": {
+    "articles": {"n1":8,"n2":12,"n3":5,"n4":23,"n5":7,"n6":3,"n7":19,"n8":11,"n9":16,"n10":9,"n11":14,"n12":6},
+    "highlights": {"h1":34,"h2":28,"h3":22,"h4":41,"h5":53,"h6":72}
+  },
+  "shares": {
+    "articles": {"n1":3,"n2":7,"n3":2,"n4":12,"n5":4,"n6":1,"n7":8,"n8":5,"n9":18,"n10":3,"n11":6,"n12":9},
+    "highlights": {"h1":18,"h2":15,"h3":12,"h4":25,"h5":31,"h6":42}
+  },
+  "analytics": {
+    "totalViews": 1247892,
+    "uniqueUsers": 89456,
+    "avgSessionTime": "4m 32s",
+    "bounceRate": 0.23,
+    "topReferrers": [
+      {"source":"google.com","visits":45231},
+      {"source":"facebook.com","visits":32847},
+      {"source":"twitter.com","visits":28194},
+      {"source":"direct","visits":67432},
+      {"source":"linkedin.com","visits":15698}
+    ],
+    "deviceStats": {
+      "mobile": 0.64,
+      "desktop": 0.31,
+      "tablet": 0.05
+    }
+  },
+  "weather": {
+    "location": "Lisboa",
+    "temperature": 22,
+    "condition": "parcialmente nublado",
+    "humidity": 65,
+    "windSpeed": 12,
+    "icon": "partly-cloudy",
+    "forecast": [
+      {"day":"Hoje","high":24,"low":18,"condition":"sol"},
+      {"day":"Amanhã","high":26,"low":19,"condition":"sol"},
+      {"day":"Sexta","high":23,"low":17,"condition":"chuva"},
+      {"day":"Sábado","high":21,"low":15,"condition":"nublado"}
+    ]
+  },
+  "events": [
+    {"id":"e1","title":"Conferência Tech 2025","date":"2025-10-15","location":"Porto","category":"tecnologia"},
+    {"id":"e2","title":"Festival de Cinema","date":"2025-10-22","location":"Lisboa","category":"cultura"},
+    {"id":"e3","title":"Congresso Médico","date":"2025-11-05","location":"Coimbra","category":"saude"},
+    {"id":"e4","title":"Feira de Startups","date":"2025-11-18","location":"Braga","category":"tecnologia"},
+    {"id":"e5","title":"Simpósio Ambiental","date":"2025-12-02","location":"Faro","category":"meio-ambiente"}
+  ],
+  "newsletters": [
+    {"id":"nl1","name":"Tech Weekly","subscribers":23450,"frequency":"semanal"},
+    {"id":"nl2","name":"Economia Hoje","subscribers":45678,"frequency":"diaria"},
+    {"id":"nl3","name":"Saúde em Foco","subscribers":18923,"frequency":"semanal"},
+    {"id":"nl4","name":"Cultura & Arte","subscribers":12856,"frequency":"mensal"}
+  ],
+  "polls": [
+    {
+      "id":"p1",
+      "question":"Qual é a maior preocupação atual?",
+      "options":[
+        {"id":"p1o1","text":"Economia","votes":1247},
+        {"id":"p1o2","text":"Saúde","votes":892},
+        {"id":"p1o3","text":"Meio Ambiente","votes":1156},
+        {"id":"p1o4","text":"Tecnologia","votes":634}
+      ],
+      "totalVotes":3929,
+      "expiresAt":"2025-10-01T00:00:00Z"
+    },
+    {
+      "id":"p2",
+      "question":"Como avalia a cobertura jornalística?",
+      "options":[
+        {"id":"p2o1","text":"Excelente","votes":456},
+        {"id":"p2o2","text":"Boa","votes":1289},
+        {"id":"p2o3","text":"Regular","votes":743},
+        {"id":"p2o4","text":"Pode melhorar","votes":298}
+      ],
+      "totalVotes":2786,
+      "expiresAt":"2025-09-30T00:00:00Z"
+    }
+  ],
+  "userPreferences": {
+    "defaultCategories": ["economia","tecnologia","saude"],
+    "notificationSettings": {
+      "breaking":true,
+      "daily":false,
+      "weekly":true
+    },
+    "displaySettings": {
+      "theme":"auto",
+      "fontSize":"medium",
+      "layout":"grid"
+    }
+  },
+  "metadata": {
+    "version": "2.1.0",
+    "lastUpdated": "2025-09-24T12:00:00Z",
+    "apiEndpoint": "https://api.exemplo.com/v2/news",
+    "rateLimits": {
+      "requests": 1000,
+      "window": "1h"
+    }
+  },
+  "createdAt": "2025-09-24T00:00:00Z"
+}
