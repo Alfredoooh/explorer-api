@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Open — Área</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000;
+    --muted:#9aa3ad;
+    --text:#e6eef3;
+    --accent:#2f6ef3;
+    --danger:#ff6b6b;
+    --ok:#17c964;
+    --card: rgba(255,255,255,0.02);
+    --border: rgba(255,255,255,0.03);
+    --radius:12px;
+  }
+  *{box-sizing:border-box;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial;color:var(--text);-webkit-font-smoothing:antialiased;}
+  html,body{height:100%;margin:0;background:var(--bg);}
+  .app{min-height:100vh;display:flex;flex-direction:column;}
+  .topbar{height:64px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--border);gap:12px;}
+  .btn-icon{width:44px;height:44px;border-radius:10px;border:0;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .title{font-size:18px;font-weight:800;}
+  .right{margin-left:auto;text-align:right;}
+  .expire{color:var(--muted);font-size:13px;}
+  .countdown{font-weight:800;color:var(--accent);font-size:16px;}
+  .main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px;}
+  .card{background:var(--card);border:1px solid var(--border);padding:22px;border-radius:12px;max-width:920px;width:100%;}
+  .big{font-size:22px;font-weight:800;margin:0 0 8px 0;}
+  .small{color:var(--muted);margin:0 0 12px 0;}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.56);display:none;align-items:flex-start;justify-content:flex-start;z-index:999;}
+  .panel{width:320px;max-width:94%;margin:28px;background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);}
+  .h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .label{color:var(--muted);font-size:13px;}
+  .val{font-weight:700;color:var(--text);font-size:15px;}
+  .row{display:flex;flex-direction:column;gap:6px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.02);}
+  .row:last-child{border-bottom:none;}
+  .actions{display:flex;gap:8px;margin-top:12px;}
+  .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700;}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);}
+  .btn-danger{background:var(--danger);color:#070707;}
+  .btn-primary{background:linear-gradient(90deg,var(--accent),#1d4ed8);color:#fff;}
+  .expired-overlay{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.95);padding:20px;border-radius:12px;border:1px solid var(--border);display:none;z-index:1001;text-align:center;}
+  .expired-overlay h2{margin:0 0 8px 0;color:var(--danger);}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:8px;text-align:center;}
+  .input-line{display:flex;gap:8px;margin-top:8px;}
+  input[type="text"]{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);}
+  @media (max-width:520px){ .panel{width:92%;margin:12px;} .big{font-size:20px;} }
+</style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Aplicação aberta">
+    <header class="topbar">
+      <button id="btnUser" class="btn-icon" aria-label="Abrir utilizador">
+        <span class="material-icons-round" style="font-size:22px">account_circle</span>
+      </button>
+      <div>
+        <div class="title">Área</div>
+        <div class="small" style="font-size:12px;color:var(--muted)">Sessão</div>
+      </div>
+
+      <div class="right">
+        <div class="expire" id="expireLabel">Expira em: —</div>
+        <div class="countdown" id="topCountdown">--:--:--</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="card" id="mainCard" aria-live="polite">
+        <div class="big" id="welcomeTitle">Bem-vindo</div>
+        <p class="small" id="welcomeSub">Se não fores o utilizador autorizado, verás apenas uma saudação.</p>
+        <div style="margin-top:12px;">
+          <button id="btnRefreshMain" class="btn btn-ghost">Actualizar</button>
+          <button id="btnLogoutMain" class="btn btn-ghost">Logout</button>
+        </div>
+
+        <!-- fallback quando não há identidade: input simples -->
+        <div id="emailPrompt" style="margin-top:14px;display:none;">
+          <div class="small">Se não vieste do login, insere o teu email para abrir a sessão nesta página:</div>
+          <div class="input-line">
+            <input id="manualEmail" type="text" placeholder="exemplo1@mail.com"/>
+            <button id="btnUseEmail" class="btn btn-primary">Abrir</button>
+          </div>
+          <div class="muted-note">Isto serve só para abrir a vista sem alterar o login.</div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- painel lateral -->
+  <div id="overlay" class="overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="panel" role="document" aria-labelledby="panelTitle">
+      <div class="h">
+        <div>
+          <div id="panelTitle" style="font-weight:800;font-size:16px">Utilizador</div>
+          <div class="label" id="panelSub">Informações da conta</div>
+        </div>
+        <button id="btnClosePanel" class="btn btn-ghost" aria-label="Fechar painel">Fechar</button>
+      </div>
+
+      <div id="panelContent">
+        <div class="row"><div class="label">Nome</div><div class="val" id="p_name">—</div></div>
+        <div class="row"><div class="label">Username</div><div class="val" id="p_user">—</div></div>
+        <div class="row"><div class="label">Email</div><div class="val" id="p_email">—</div></div>
+        <div class="row"><div class="label">Telefone</div><div class="val" id="p_phone">—</div></div>
+        <div class="row"><div class="label">Experiência</div><div class="val" id="p_exp">—</div></div>
+        <div class="row"><div class="label">Expira</div><div class="val" id="p_expire">—</div></div>
+        <div class="row"><div class="label">Tempo restante</div><div class="val" id="p_countdown">--:--:--</div></div>
+
+        <div class="actions">
+          <button id="btnLogoutPanel" class="btn btn-danger">Terminar sessão</button>
+          <button id="btnClosePanel2" class="btn btn-ghost">Fechar</button>
+        </div>
+      </div>
+
+      <div id="panelSimple" style="display:none;">
+        <div class="row"><div class="label">Sessão</div><div class="val" id="simpleName">—</div></div>
+        <div class="actions">
+          <button id="btnLogoutSimple" class="btn btn-ghost">Logout</button>
+          <button id="btnCloseSimple" class="btn btn-ghost">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="expiredOverlay" class="expired-overlay" role="alert" aria-live="assertive" style="display:none;">
+    <h2>Sessão terminada</h2>
+    <div class="muted-note">A sessão expirou. A seguir serás redirecionado para o login.</div>
+  </div>
+
+<script>
+/* open.html robusto — não precisa que o login grave localStorage, permite input manual.
+   Regras: mostra dados completos apenas se email === 'exemplo1@mail.com'
+*/
+const API_URL = 'https://alfredoooh.github.io/explorer-api/docs/users1.json';
+const AUTH_EMAIL = 'exemplo1@mail.com';
+
+const btnUser = document.getElementById('btnUser');
+const overlay = document.getElementById('overlay');
+const btnClosePanel = document.getElementById('btnClosePanel');
+const btnClosePanel2 = document.getElementById('btnClosePanel2');
+const btnLogoutPanel = document.getElementById('btnLogoutPanel');
+const panelContent = document.getElementById('panelContent');
+const panelSimple = document.getElementById('panelSimple');
+
+const p_name = document.getElementById('p_name');
+const p_user = document.getElementById('p_user');
+const p_email = document.getElementById('p_email');
+const p_phone = document.getElementById('p_phone');
+const p_exp = document.getElementById('p_exp');
+const p_expire = document.getElementById('p_expire');
+const p_countdown = document.getElementById('p_countdown');
+
+const simpleName = document.getElementById('simpleName');
+const expireLabel = document.getElementById('expireLabel');
+const topCountdown = document.getElementById('topCountdown');
+const btnRefreshMain = document.getElementById('btnRefreshMain');
+const btnLogoutMain = document.getElementById('btnLogoutMain');
+const expiredOverlay = document.getElementById('expiredOverlay');
+
+const emailPrompt = document.getElementById('emailPrompt');
+const manualEmail = document.getElementById('manualEmail');
+const btnUseEmail = document.getElementById('btnUseEmail');
+
+let users = [];
+let current = null;
+let topTimer = null;
+let panelTimer = null;
+
+/* util */
+const qs = (k) => new URLSearchParams(window.location.search).get(k);
+function pad(n){ return String(n).padStart(2,'0'); }
+function durationToString(diff){
+  if (diff <= 0) return '00:00:00';
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const secs = Math.floor((diff % (1000*60)) / 1000);
+  return (days>0 ? `${days}d ` : '') + `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+}
+function parseExpires(ex){
+  if (!ex) return null;
+  const y = ex.year || ex.y; if (!y) return null;
+  const m = ('month' in ex) ? ex.month : (ex.m || null); if (!m) return null;
+  const d = ex.day || ex.d || 1;
+  const hh = ex.hours || ex.h || 0;
+  const mm = ex.minutes || ex.min || 0;
+  return new Date(y, m - 1, d, hh, mm, 0);
+}
+
+/* robust fetch with localStorage fallback */
+async function fetchUsersRobust(){
+  try {
+    const res = await fetch(API_URL, {cache:'no-store'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const arr = Array.isArray(data) ? data : (data.users || []);
+    try { localStorage.setItem('users_cache', JSON.stringify(arr)); } catch(e){}
+    users = arr;
+    return arr;
+  } catch (err) {
+    console.warn('fetch falhou:', err);
+    const raw = localStorage.getItem('users_cache');
+    if (raw) {
+      try { const arr = JSON.parse(raw); if (Array.isArray(arr)) { users = arr; return arr; } } catch(e){ console.warn('parse cache falhou', e); }
+    }
+    throw err;
+  }
+}
+
+/* identity resolution: storage, query, or null */
+function resolveIdentity(){
+  const sEmail = localStorage.getItem('logged_user_email');
+  const sUser = localStorage.getItem('logged_user');
+  const qEmail = qs('email');
+  const qUser = qs('u');
+  if (sEmail) return { email: sEmail };
+  if (qEmail) return { email: qEmail };
+  if (sUser) return { username: sUser };
+  if (qUser) return { username: qUser };
+  return null;
+}
+
+/* find user */
+function findUser({email, username}){
+  if (!users || !users.length) return null;
+  if (email) {
+    const f = users.find(u => String(u.email||'').toLowerCase() === String(email).toLowerCase());
+    if (f) return f;
+  }
+  if (username) {
+    const f = users.find(u => String(u.username||'').toLowerCase() === String(username).toLowerCase());
+    if (f) return f;
+  }
+  return null;
+}
+
+/* top expiry countdown */
+function setTopExpiry(expDate){
+  if (!expDate) { expireLabel.textContent = 'Expira em: —'; topCountdown.textContent='--:--:--'; return; }
+  expireLabel.textContent = 'Expira em: ' + expDate.toLocaleString();
+  if (topTimer) clearInterval(topTimer);
+  function tick(){
+    const diff = expDate - new Date();
+    topCountdown.textContent = durationToString(diff);
+    if (diff <= 0) doAutoLogout();
+  }
+  tick();
+  topTimer = setInterval(tick,1000);
+}
+
+/* panel countdown */
+function setPanelCountdown(expDate){
+  if (panelTimer) clearInterval(panelTimer);
+  if (!expDate) { p_countdown.textContent = '--:--:--'; return; }
+  function tick(){
+    const diff = expDate - new Date();
+    p_countdown.textContent = durationToString(diff);
+    if (diff <= 0) {
+      p_countdown.textContent = '00:00:00';
+      doAutoLogout();
+    }
+  }
+  tick();
+  panelTimer = setInterval(tick,1000);
+}
+
+/* auto logout */
+function doAutoLogout(){
+  if (topTimer) { clearInterval(topTimer); topTimer = null; }
+  if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
+  expiredOverlay.style.display = 'block';
+  setTimeout(() => {
+    try { localStorage.removeItem('logged_user'); localStorage.removeItem('logged_user_email'); } catch(e){}
+    window.location.href = 'login.html';
+  }, 1400);
+}
+
+/* open panel for a user (or simple view) */
+function openPanelFor(user){
+  if (!user) {
+    panelContent.style.display = 'none';
+    panelSimple.style.display = 'block';
+    simpleName.textContent = localStorage.getItem('logged_user_email') || localStorage.getItem('logged_user') || '—';
+  } else {
+    panelContent.style.display = 'block';
+    panelSimple.style.display = 'none';
+    p_name.textContent = user.fullName || '—';
+    p_user.textContent = '@' + (user.username || '—');
+    p_email.textContent = user.email || '—';
+    p_phone.textContent = user.phone || '—';
+    p_exp.textContent = user.experience || '—';
+    const expDate = parseExpires(user.expires);
+    p_expire.textContent = expDate ? expDate.toLocaleString() : '—';
+    setPanelCountdown(expDate);
+  }
+  overlay.style.display = 'flex';
+  overlay.setAttribute('aria-hidden','false');
+}
+function closePanel(){
+  overlay.style.display = 'none';
+  overlay.setAttribute('aria-hidden','true');
+  if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
+}
+function logoutAndRedirect(){
+  try { localStorage.removeItem('logged_user'); localStorage.removeItem('logged_user_email'); } catch(e){}
+  window.location.href = 'login.html';
+}
+
+/* init */
+async function init(){
+  // try to load users (with fallback)
+  try {
+    await fetchUsersRobust();
+  } catch (e) {
+    // if fetch fails and no cache, show email prompt so user can still proceed manually
+    console.warn('Não foi possível obter lista remota — entrando em modo manual.', e);
+  }
+
+  const id = resolveIdentity();
+  let user = null;
+  if (id) user = findUser(id);
+
+  // If no user resolved, show the manual email input
+  if (!user) {
+    document.getElementById('emailPrompt').style.display = 'block';
+    // greet minimal
+    document.getElementById('welcomeTitle').textContent = 'Olá';
+    document.getElementById('welcomeSub').textContent = 'Insere o email abaixo para abrir a conta neste ecrã.';
+    // clicking Abrir will attempt to find user by email in cache or fetch
+    btnUseEmail.addEventListener('click', async () => {
+      const mail = (manualEmail.value || '').trim();
+      if (!mail) return alert('Insere um email.');
+      // try fetch again (maybe now network ok)
+      try { await fetchUsersRobust(); } catch(e){ /* ignore */ }
+      const found = findUser({ email: mail });
+      if (!found) {
+        alert('Utilizador não encontrado para esse email.');
+        return;
+      }
+      // store convenience
+      try { localStorage.setItem('logged_user_email', found.email || ''); localStorage.setItem('logged_user', found.username || ''); } catch(e){}
+      current = found;
+      const authorized = String(found.email||'').toLowerCase() === AUTH_EMAIL.toLowerCase();
+      if (authorized) {
+        document.getElementById('welcomeTitle').textContent = `Olá, ${found.fullName || found.username}`;
+        document.getElementById('welcomeSub').textContent = `Sessão ativa para ${found.email}. Abre o painel com o botão superior esquerdo.`;
+      } else {
+        document.getElementById('welcomeTitle').textContent = 'Olá';
+        document.getElementById('welcomeSub').textContent = 'Informações privadas não disponíveis para esta conta.';
+      }
+      const expDate = parseExpires(found.expires);
+      setTopExpiry(expDate);
+      // open panel automatically
+      openPanelFor(authorized ? found : null);
+    });
+    // still attach logout/refresh
+    btnRefreshMain.addEventListener('click', () => location.reload());
+    btnLogoutMain.addEventListener('click', logoutAndRedirect);
+    return;
+  }
+
+  // We have a resolved user from storage or query
+  current = user;
+  const authorized = String(user.email||'').toLowerCase() === AUTH_EMAIL.toLowerCase();
+  // set top expiry and greeting
+  const expDate = parseExpires(user.expires);
+  setTopExpiry(expDate);
+
+  if (authorized) {
+    document.getElementById('welcomeTitle').textContent = `Olá, ${user.fullName || user.username}`;
+    document.getElementById('welcomeSub').textContent = `Sessão ativa para ${user.email}. Abre os teus dados no botão superior esquerdo.`;
+    try { localStorage.setItem('logged_user_email', user.email || ''); localStorage.setItem('logged_user', user.username || ''); } catch(e){}
+  } else {
+    document.getElementById('welcomeTitle').textContent = 'Olá';
+    document.getElementById('welcomeSub').textContent = 'Informações privadas não disponíveis para esta conta.';
+    try { localStorage.setItem('logged_user', user.username || ''); } catch(e){}
+  }
+
+  // wiring buttons
+  btnUser.onclick = () => {
+    if (authorized) openPanelFor(user);
+    else openPanelFor(null);
+  };
+  btnClosePanel.onclick = closePanel;
+  btnClosePanel2.onclick = closePanel;
+  document.getElementById('btnLogoutPanel').onclick = logoutAndRedirect;
+  document.getElementById('btnLogoutSimple').onclick = logoutAndRedirect;
+  document.getElementById('btnCloseSimple').onclick = closePanel;
+  btnRefreshMain.onclick = async () => {
+    try {
+      await fetchUsersRobust();
+      const latest = findUser({ username: user.username, email: user.email });
+      if (latest) {
+        current = latest;
+        const exp = parseExpires(latest.expires);
+        setTopExpiry(exp);
+        if (overlay.style.display === 'flex' && panelContent.style.display === 'block') {
+          p_name.textContent = latest.fullName || '—';
+          p_user.textContent = '@' + (latest.username || '—');
+          p_email.textContent = latest.email || '—';
+          p_phone.textContent = latest.phone || '—';
+          p_exp.textContent = latest.experience || '—';
+          p_expire.textContent = exp ? exp.toLocaleString() : '—';
+          setPanelCountdown(exp);
+        }
+      }
+    } catch (e) { console.error(e); alert('Erro ao actualizar.'); }
+  };
+  btnLogoutMain.onclick = logoutAndRedirect;
+
+  // if expired already — auto logout
+  if (expDate && new Date() >= expDate) {
+    setTimeout(() => doAutoLogout(), 300);
+  }
+}
+
+/* close overlay when clicking outside */
+overlay.addEventListener('click', (e) => { if (e.target === overlay) closePanel(); });
+
+init();
+</script>
+</body>
+</html>
