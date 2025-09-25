@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Login</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep: #030409;
+    --muted: #9aa3ad;
+    --text: #e6eef3;
+
+    /* COR PRIMÁRIA RESTAURADA (azul original pedido) */
+    --primary-start: #2f6ef3;
+    --primary-end:   #1d4ed8;
+    --input-border: rgba(255,255,255,0.06);
+    --input-focus: rgba(37,99,235,0.14);
+
+    --snack-ok: #17c964;
+    --snack-err: #ff6b6b;
+  }
+
+  *{box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    height:100%; margin:0;
+    background: linear-gradient(180deg,var(--bg-deep) 0%, #04060a 100%);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial;
+    color:var(--text);
+    -webkit-user-select:none; user-select:none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .viewport {
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:34px 18px;
+  }
+
+  .shell {
+    width:100%;
+    max-width:420px;
+    padding:28px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    align-items:stretch;
+    background:transparent;
+  }
+
+  .top {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--muted);
+    font-size:15px;
+    user-select:none;
+    gap:8px;
+  }
+
+  .visually-hidden { position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap;border:0;padding:0;margin:-1px; }
+
+  form { display:flex; flex-direction:column; gap:12px; align-items:stretch; margin-top:6px; }
+
+  .field {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background: rgba(255,255,255,0.01);
+    border:1px solid var(--input-border);
+    border-radius:12px;
+    padding:10px 12px;
+    transition: box-shadow .12s ease, border-color .12s ease;
+    min-height:48px;
+  }
+  .field:focus-within {
+    border-color: rgba(37,99,235,0.95);
+    box-shadow: 0 8px 22px var(--input-focus);
+    transform: translateY(-1px);
+  }
+
+  .field .icon { color:var(--muted); font-size:20px; opacity:.95; }
+
+  input[type="text"], input[type="password"] {
+    background:transparent;
+    border:0;
+    outline:0;
+    color:var(--text);
+    font-size:15px;
+    width:100%;
+    -webkit-appearance:none;
+  }
+
+  /* botão primário pílula em azul */
+  .btn {
+    margin-top:4px;
+    width:100%;
+    border-radius:999px;
+    padding:12px 14px;
+    font-weight:700;
+    font-size:16px;
+    border:0;
+    cursor:pointer;
+    background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+    color:white;
+    transition: transform .08s ease, opacity .08s ease;
+    -webkit-user-select:none; user-select:none;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn[disabled]{ opacity:.6; cursor:not-allowed; }
+
+  /* password visibility button */
+  .eye-btn {
+    background:transparent;
+    border:0;
+    color:var(--muted);
+    cursor:pointer;
+    padding:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+  }
+  .eye-btn:active { transform: translateY(1px); }
+
+  .status-inline { display:none; color:var(--muted); font-size:14px; margin-top:6px; }
+
+  .snackbar {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    bottom: 22px;
+    min-width: 220px;
+    max-width: 92%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    justify-content:center;
+    padding:12px 18px;
+    border-radius:12px;
+    font-weight:600;
+    color: #070708;
+    background: var(--snack-ok);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .32s cubic-bezier(.2,.9,.2,1), opacity .24s ease;
+    z-index: 9999;
+  }
+  .snackbar.show { transform: translateX(-50%) translateY(0); opacity:1; pointer-events:auto; }
+  .snackbar.err { background: var(--snack-err); color:#070708; }
+  .snackbar .icon { font-size:20px; opacity:.95; }
+
+  @media (max-width:420px) {
+    .shell { padding:20px 14px; }
+  }
+</style>
+</head>
+<body>
+  <div class="viewport">
+    <div class="shell" role="main" aria-labelledby="loginTitle">
+      <h1 id="loginTitle" class="visually-hidden">Login</h1>
+
+      <div id="langToggle" class="top" tabindex="0" aria-label="Selecionar idioma">English (US) <span class="material-icons-round" style="font-size:18px;color:var(--muted)">keyboard_arrow_down</span></div>
+
+      <form id="loginForm" novalidate>
+        <div class="field" role="group" aria-label="Username">
+          <span class="material-icons-round icon">person</span>
+          <input id="identifier" type="text" autocomplete="username" placeholder="Username, email or mobile number" aria-label="username"/>
+        </div>
+
+        <div class="field" role="group" aria-label="Password">
+          <span class="material-icons-round icon">lock</span>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Password" aria-label="password" />
+          <!-- botão claramente separado, tipo=button para não submeter o form -->
+          <button type="button" id="togglePwd" class="eye-btn" aria-pressed="false" aria-label="Mostrar palavra-passe" title="Mostrar/ocultar palavra-passe">
+            <span class="material-icons-round" id="eyeIcon">visibility</span>
+          </button>
+        </div>
+
+        <button id="btnLogin" class="btn" type="button" aria-label="Log in">Log in</button>
+
+        <div id="statusInline" class="status-inline" aria-hidden="true"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="snackbar" class="snackbar" role="status" aria-live="polite" aria-atomic="true">
+    <span id="snackIcon" class="material-icons-round icon">check_circle</span>
+    <span id="snackText">Login successful</span>
+  </div>
+
+<script>
+/* simples util */
+const $id = (id) => document.getElementById(id);
+
+/* i18n strings (mantive pt/en toggle) */
+const STRINGS = {
+  en: {
+    langLabel: 'English (US)',
+    identifierPlaceholder: 'Username, email or mobile number',
+    passwordPlaceholder: 'Password',
+    login: 'Log in',
+    messages: {
+      fill: 'Please fill all fields.',
+      notFound: 'User not found.',
+      wrongPass: 'Incorrect password.',
+      expired: 'Account expired or no access.',
+      ok: 'Login successful.',
+      errorPrefix: 'Error:'
+    }
+  },
+  pt: {
+    langLabel: 'Português (PT)',
+    identifierPlaceholder: 'Nome de utilizador, email ou número',
+    passwordPlaceholder: 'Palavra-passe',
+    login: 'Entrar',
+    messages: {
+      fill: 'Preenche todos os campos.',
+      notFound: 'Utilizador não encontrado.',
+      wrongPass: 'Palavra-passe incorreta.',
+      expired: 'Conta expirada/sem acesso.',
+      ok: 'Login válido.',
+      errorPrefix: 'Erro:'
+    }
+  }
+};
+let lang = localStorage.getItem('app_lang') || 'en';
+
+function applyLanguage() {
+  const s = STRINGS[lang];
+  $id('langToggle').innerHTML = `${s.langLabel} <span class="material-icons-round" style="font-size:18px;color:var(--muted)">keyboard_arrow_down</span>`;
+  $id('identifier').placeholder = s.identifierPlaceholder;
+  $id('password').placeholder = s.passwordPlaceholder;
+  $id('btnLogin').textContent = s.login;
+  localStorage.setItem('app_lang', lang);
+}
+applyLanguage();
+$id('langToggle').addEventListener('click', () => { lang = (lang === 'en') ? 'pt' : 'en'; applyLanguage(); });
+$id('langToggle').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $id('langToggle').click(); } });
+
+/* --- PASSWORD VISIBILITY (FIXED) --- */
+/* robust handling: use addEventListener on existing element and toggle aria attributes */
+const toggleBtn = $id('togglePwd');
+const pwInput = $id('password');
+const eyeIcon = $id('eyeIcon');
+
+toggleBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  // toggle type
+  if (pwInput.type === 'password') {
+    pwInput.type = 'text';
+    eyeIcon.textContent = 'visibility_off';
+    toggleBtn.setAttribute('aria-pressed', 'true');
+    toggleBtn.setAttribute('aria-label', 'Ocultar palavra-passe');
+    toggleBtn.title = 'Ocultar palavra-passe';
+  } else {
+    pwInput.type = 'password';
+    eyeIcon.textContent = 'visibility';
+    toggleBtn.setAttribute('aria-pressed', 'false');
+    toggleBtn.setAttribute('aria-label', 'Mostrar palavra-passe');
+    toggleBtn.title = 'Mostrar palavra-passe';
+  }
+  // keep focus in the input after toggle for better UX
+  pwInput.focus();
+});
+
+/* --- SNACKBAR --- */
+let snackTimer = null;
+function showSnackbar(message, type = 'ok', duration = 3000) {
+  const bar = $id('snackbar');
+  const text = $id('snackText');
+  const icon = $id('snackIcon');
+
+  text.textContent = message;
+  if (type === 'err') {
+    bar.classList.add('err');
+    icon.textContent = 'error';
+  } else {
+    bar.classList.remove('err');
+    icon.textContent = 'check_circle';
+  }
+
+  bar.classList.add('show');
+  if (snackTimer) clearTimeout(snackTimer);
+  snackTimer = setTimeout(() => { bar.classList.remove('show'); snackTimer = null; }, duration);
+}
+
+/* --- Authentication (kept) --- */
+const API_URL = 'https://alfredoooh.github.io/explorer-api/docs/users1.json';
+const OPEN_URL = 'https://alfredoooh.github.io/explorer-api/docs/open.html';
+let usersCache = null;
+async function loadUsers() {
+  if (usersCache) return usersCache;
+  const res = await fetch(API_URL, {cache: 'no-store'});
+  if (!res.ok) throw new Error('Falha ao carregar users: ' + res.status);
+  const js = await res.json();
+  usersCache = Array.isArray(js) ? js : (js.users || []);
+  return usersCache;
+}
+
+$id('btnLogin').addEventListener('click', async () => {
+  const idv = $id('identifier').value.trim();
+  const pw = $id('password').value || '';
+  const msgs = STRINGS[lang].messages;
+
+  if (!idv || !pw) { showSnackbar(msgs.fill, 'err'); return; }
+
+  try {
+    const users = await loadUsers();
+    const found = users.find(u => u.username === idv || u.email === idv);
+
+    if (!found) { showSnackbar(msgs.notFound, 'err'); return; }
+    if (found.password !== pw) { showSnackbar(msgs.wrongPass, 'err'); return; }
+
+    let expired = false;
+    if (found.expires) {
+      let exp = null;
+      if (typeof found.expires === 'string') exp = new Date(found.expires);
+      else if (found.expires.iso) exp = new Date(found.expires.iso);
+      else if (found.expires.year) exp = new Date(found.expires.year, (found.expires.month || 1) - 1, found.expires.day || 1);
+      if (exp && new Date() >= exp) expired = true;
+    }
+    if (found.access === false || expired) { showSnackbar(msgs.expired, 'err'); return; }
+
+    showSnackbar(msgs.ok, 'ok', 1400);
+    setTimeout(() => { window.location.href = OPEN_URL; }, 900);
+
+  } catch (e) {
+    const prefix = STRINGS[lang].messages.errorPrefix;
+    showSnackbar(prefix + ' ' + (e.message || e), 'err');
+  }
+});
+
+/* submit on Enter inside inputs */
+['identifier','password'].forEach(id => {
+  const el = $id(id);
+  el && el.addEventListener('keydown', (e) => { if (e.key === 'Enter') $id('btnLogin').click(); });
+});
+</script>
+</body>
+</html>
