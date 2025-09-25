@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Área do Utilizador</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root{
+    --bg: #000000;               /* fundo bem escuro */
+    --panel: #070707;
+    --muted: #9aa3ad;
+    --text: #e6eef3;
+    --accent: #2f6ef3;
+    --danger: #ff6b6b;
+    --ok: #17c964;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial;color:var(--text);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+  html,body{height:100%;margin:0;background:var(--bg);font-size:16px;}
+  body{display:flex;align-items:flex-start;justify-content:center;padding:36px 16px;}
+
+  /* container estreito e centrado horizontalmente, conteúdo "reto" conforme pediste */
+  .container{width:100%;max-width:520px;display:flex;flex-direction:column;gap:18px;}
+  .card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);border-radius:var(--radius);padding:20px;}
+  .simple { display:flex;flex-direction:column;gap:12px;align-items:center; text-align:center; padding:28px 16px; }
+  .greet { font-size:28px;font-weight:700; margin:0; }
+  .sub { color:var(--muted); font-size:14px; margin:0; }
+
+  /* detalhes do utilizador (apenas quando autorizado) */
+  .info { display:flex;flex-direction:column;gap:12px; }
+  .row{display:flex;gap:12px;align-items:center;}
+  .label{min-width:120px;color:var(--muted);font-size:14px;}
+  .value{font-weight:600;font-size:15px;}
+  .countdown{font-weight:800;color:var(--accent);font-size:18px;}
+
+  /* botões simples */
+  .actions{display:flex;gap:10px;justify-content:center;margin-top:6px;}
+  .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700;}
+  .btn-primary{background:linear-gradient(90deg,var(--accent),#1d4ed8);color:#fff;}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);}
+
+  /* aviso expirado */
+  .expired { color:var(--danger); font-weight:800; text-align:center; margin-top:8px; }
+
+  @media (max-width:520px){ .greet { font-size:24px; } .label{min-width:90px;} }
+</style>
+</head>
+<body>
+  <div class="container" role="main" aria-labelledby="title">
+    <!-- Simples painel: ou mostra os detalhes se autorizado, ou apenas saudação -->
+    <div id="panel" class="card">
+      <!-- inicial minimal -->
+      <div id="simpleView" class="simple" style="display:none;">
+        <h1 class="greet" id="greetText">Olá</h1>
+        <p class="sub" id="greetSub">Bem-vindo à tua área.</p>
+        <div class="actions">
+          <button id="btnRefresh" class="btn btn-ghost" type="button">Actualizar</button>
+          <button id="btnLogout" class="btn btn-ghost" type="button">Logout</button>
+        </div>
+      </div>
+
+      <div id="detailView" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <h2 id="u_fullName" style="margin:0;font-size:20px;font-weight:800;"></h2>
+            <div class="sub" id="u_username" style="margin-top:6px;"></div>
+          </div>
+          <div style="text-align:right;">
+            <div class="sub">Status</div>
+            <div id="u_access_badge" class="value" style="margin-top:6px;"></div>
+          </div>
+        </div>
+
+        <div class="info" style="margin-top:14px;">
+          <div class="row"><div class="label">Email</div><div id="u_email" class="value"></div></div>
+          <div class="row"><div class="label">Telefone</div><div id="u_phone" class="value"></div></div>
+          <div class="row"><div class="label">Idade</div><div id="u_age" class="value"></div></div>
+          <div class="row"><div class="label">Experiência</div><div id="u_exp" class="value"></div></div>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:6px 0;" />
+
+          <div class="row"><div class="label">Expira em</div><div id="u_expire" class="value"></div></div>
+          <div class="row"><div class="label">Tempo restante</div><div id="u_countdown" class="countdown">--:--:--</div></div>
+        </div>
+
+        <div class="actions" style="margin-top:16px;">
+          <button id="btnBack" class="btn btn-ghost" type="button">Voltar</button>
+          <button id="btnLogout2" class="btn btn-primary" type="button">Logout</button>
+        </div>
+
+        <div id="expiredNotice" class="expired" style="display:none;">Conta expirada — acesso bloqueado</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/*
+  open.html (simplificado)
+  - Mostra detalhes somente se user.email === 'exemplo1@mail.com'
+  - Identificação por:
+     1) localStorage.logged_user_email
+     2) query param ?email=
+     3) localStorage.logged_user (username) ou ?u=... -> resolve para email consultando API
+  - Caso contrário apresenta só saudação e botões simples.
+*/
+
+const API_URL = 'https://alfredoooh.github.io/explorer-api/docs/users1.json';
+const SHOW_EMAIL = 'exemplo1@mail.com'; // email que tem acesso detalhado (exigido pelo utilizador)
+const getEl = id => document.getElementById(id);
+
+const simpleView = getEl('simpleView');
+const detailView = getEl('detailView');
+
+const greetText = getEl('greetText');
+const greetSub = getEl('greetSub');
+
+const u_fullName = getEl('u_fullName');
+const u_username = getEl('u_username');
+const u_email = getEl('u_email');
+const u_phone = getEl('u_phone');
+const u_age = getEl('u_age');
+const u_exp = getEl('u_exp');
+const u_expire = getEl('u_expire');
+const u_countdown = getEl('u_countdown');
+const u_access_badge = getEl('u_access_badge');
+const expiredNotice = getEl('expiredNotice');
+
+const btnRefresh = getEl('btnRefresh');
+const btnLogout = getEl('btnLogout');
+const btnBack = getEl('btnBack');
+const btnLogout2 = getEl('btnLogout2');
+
+let users = [];
+let currentUser = null;
+let countdownTimer = null;
+
+/* util: query param */
+function q(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+/* parse expires object -> Date or null */
+function parseExpires(ex) {
+  if (!ex) return null;
+  const y = ex.year || ex.y;
+  const m = ('month' in ex) ? ex.month : (ex.m || null);
+  const d = ex.day || ex.d || 1;
+  const hh = ex.hours || ex.h || 0;
+  const mm = ex.minutes || ex.min || 0;
+  if (!y || !m) return null;
+  return new Date(y, m - 1, d, hh || 0, mm || 0, 0);
+}
+
+/* countdown update */
+function startCountdown(expDate) {
+  if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  if (!expDate) {
+    u_countdown.textContent = '—';
+    return;
+  }
+  function upd() {
+    const now = new Date();
+    const diff = expDate - now;
+    if (diff <= 0) {
+      u_countdown.textContent = '00:00:00';
+      expiredNotice.style.display = 'block';
+      u_access_badge.textContent = 'Sem acesso';
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+      return;
+    }
+    expiredNotice.style.display = 'none';
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const secs = Math.floor((diff % (1000*60)) / 1000);
+    const pad = n => String(n).padStart(2,'0');
+    u_countdown.textContent = (days > 0 ? `${days}d ` : '') + `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+  }
+  upd();
+  countdownTimer = setInterval(upd, 1000);
+}
+
+/* render minimal greeting view */
+function showSimpleView(name) {
+  detailView.style.display = 'none';
+  simpleView.style.display = 'flex';
+  greetText.textContent = name ? `Olá, ${name}` : 'Olá';
+  greetSub.textContent = 'Sessão iniciada. Apenas opções básicas disponíveis.';
+}
+
+/* render detailed user view */
+function showDetailView(user) {
+  simpleView.style.display = 'none';
+  detailView.style.display = 'block';
+  u_fullName.textContent = user.fullName || user.username || '—';
+  u_username.textContent = '@' + (user.username || '—');
+  u_email.textContent = user.email || '—';
+  u_phone.textContent = user.phone || '—';
+  u_age.textContent = (user.age !== undefined ? String(user.age) : '—');
+  u_exp.textContent = user.experience || '—';
+  u_access_badge.textContent = (user.access === false ? 'Sem acesso' : 'Com acesso');
+  const expDate = parseExpires(user.expires);
+  u_expire.textContent = expDate ? expDate.toLocaleString() : '—';
+  startCountdown(expDate);
+}
+
+/* find user in array by username or email */
+function findUser(list, {username, email}) {
+  if (!list || !list.length) return null;
+  if (email) {
+    const byEmail = list.find(u => String(u.email || '').toLowerCase() === String(email).toLowerCase());
+    if (byEmail) return byEmail;
+  }
+  if (username) {
+    const byUser = list.find(u => String(u.username || '').toLowerCase() === String(username).toLowerCase());
+    if (byUser) return byUser;
+  }
+  return null;
+}
+
+/* main flow: try to determine identity and render accordingly */
+async function init() {
+  // try localStorage email first
+  const storedEmail = localStorage.getItem('logged_user_email');
+  const storedUser = localStorage.getItem('logged_user'); // username
+  const emailParam = q('email');
+  const usernameParam = q('u');
+
+  // if we already know storedEmail and it is NOT the special, show simple
+  if (storedEmail && storedEmail.toLowerCase() !== SHOW_EMAIL.toLowerCase()) {
+    showSimpleView(storedEmail);
+    return;
+  }
+
+  // if we have storedEmail and it equals SHOW_EMAIL, fetch API to get full data and show detail
+  // else if we have usernameParam or storedUser or emailParam, fetch API and try to resolve
+  try {
+    const resp = await fetch(API_URL, {cache: 'no-store'});
+    if (!resp.ok) throw new Error('Falha ao carregar API: ' + resp.status);
+    const data = await resp.json();
+    users = Array.isArray(data) ? data : (data.users || []);
+
+    // resolution order for email:
+    let emailToCheck = storedEmail || emailParam || null;
+    let usernameToCheck = storedUser || usernameParam || null;
+
+    let user = null;
+    if (emailToCheck) {
+      user = findUser(users, { email: emailToCheck });
+    }
+    if (!user && usernameToCheck) {
+      user = findUser(users, { username: usernameToCheck });
+      if (user && !emailToCheck) emailToCheck = user.email;
+    }
+
+    // if we resolved a user and their email exactly matches the special email, show detail
+    if (user && user.email && String(user.email).toLowerCase() === SHOW_EMAIL.toLowerCase()) {
+      currentUser = user;
+      showDetailView(user);
+      // store convenience for future loads (optional)
+      try { localStorage.setItem('logged_user', user.username || ''); localStorage.setItem('logged_user_email', user.email || ''); } catch(e){}
+      return;
+    }
+
+    // if email param explicitly equals special, but user not found yet, try to show simple with email
+    if ((emailParam && String(emailParam).toLowerCase() === SHOW_EMAIL.toLowerCase()) && !user) {
+      // attempt to find by email again
+      user = findUser(users, { email: emailParam });
+      if (user) { currentUser = user; showDetailView(user); return; }
+    }
+
+    // otherwise: show simple greeting (use full name if known via resolved user or stored values)
+    const nameForGreet = (user && user.fullName) || (storedUser) || (emailParam) || null;
+    showSimpleView(nameForGreet);
+
+  } catch (err) {
+    // on error, degrade to simple view and log error
+    console.error(err);
+    showSimpleView(null);
+  }
+}
+
+/* actions */
+btnRefresh.addEventListener('click', () => init());
+btnLogout.addEventListener('click', () => {
+  localStorage.removeItem('logged_user');
+  localStorage.removeItem('logged_user_email');
+  // redirect to login page (mudar se necessário)
+  window.location.href = 'index.html';
+});
+btnBack.addEventListener('click', () => {
+  // voltar para vista simples
+  showSimpleView((currentUser && currentUser.fullName) || null);
+});
+btnLogout2.addEventListener('click', () => {
+  localStorage.removeItem('logged_user');
+  localStorage.removeItem('logged_user_email');
+  window.location.href = 'index.html';
+});
+
+/* init */
+init();
+</script>
+</body>
+</html>
