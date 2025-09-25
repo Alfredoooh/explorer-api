@@ -3,304 +3,506 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Área do Utilizador</title>
+<title>App — Open</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <style>
   :root{
-    --bg: #000000;               /* fundo bem escuro */
-    --panel: #070707;
-    --muted: #9aa3ad;
-    --text: #e6eef3;
-    --accent: #2f6ef3;
-    --danger: #ff6b6b;
-    --ok: #17c964;
-    --radius: 14px;
+    --bg:#000000;
+    --panel:#070707;
+    --muted:#9aa3ad;
+    --text:#e6eef3;
+    --accent:#2f6ef3;
+    --danger:#ff6b6b;
+    --ok:#17c964;
+    --radius:12px;
   }
-  *{box-sizing:border-box;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial;color:var(--text);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-  html,body{height:100%;margin:0;background:var(--bg);font-size:16px;}
-  body{display:flex;align-items:flex-start;justify-content:center;padding:36px 16px;}
+  *{box-sizing:border-box;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial;color:var(--text);-webkit-font-smoothing:antialiased;}
+  html,body{height:100%;margin:0;background:var(--bg);}
+  /* App Shell */
+  .app {
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar {
+    height:64px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 16px;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  }
+  .left {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:72px;
+  }
+  .btn-icon {
+    width:44px;height:44px;border-radius:10px;border:0;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .title {
+    font-size:18px;font-weight:800;
+    margin-left:6px;
+  }
+  .right {
+    margin-left:auto; display:flex; align-items:center; gap:12px;
+  }
+  .expire {
+    color:var(--muted);
+    font-size:14px;
+    text-align:right;
+  }
+  .countdown {
+    font-weight:800;
+    color:var(--accent);
+    font-size:16px;
+  }
 
-  /* container estreito e centrado horizontalmente, conteúdo "reto" conforme pediste */
-  .container{width:100%;max-width:520px;display:flex;flex-direction:column;gap:18px;}
-  .card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);border-radius:var(--radius);padding:20px;}
-  .simple { display:flex;flex-direction:column;gap:12px;align-items:center; text-align:center; padding:28px 16px; }
-  .greet { font-size:28px;font-weight:700; margin:0; }
-  .sub { color:var(--muted); font-size:14px; margin:0; }
+  /* main content */
+  .main {
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+  }
+  .card {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.02);
+    padding:22px;
+    border-radius:12px;
+    max-width:920px;
+    width:100%;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.6);
+  }
+  .big {
+    font-size:22px;font-weight:800;margin:0 0 8px 0;
+  }
+  .small { color:var(--muted); margin:0 0 12px 0; }
 
-  /* detalhes do utilizador (apenas quando autorizado) */
-  .info { display:flex;flex-direction:column;gap:12px; }
-  .row{display:flex;gap:12px;align-items:center;}
-  .label{min-width:120px;color:var(--muted);font-size:14px;}
-  .value{font-weight:600;font-size:15px;}
-  .countdown{font-weight:800;color:var(--accent);font-size:18px;}
+  /* user panel (modal from left) */
+  .overlay {
+    position:fixed;inset:0;background:rgba(0,0,0,0.55);display:none;align-items:flex-start;justify-content:flex-start;z-index:999;
+  }
+  .panel {
+    width:320px;
+    max-width:85%;
+    margin:28px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);
+    border-radius:12px;
+    padding:18px;
+    border:1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+  }
+  .panel .h { display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+  .label{color:var(--muted);font-size:13px;}
+  .val{font-weight:700;font-size:15px;color:var(--text);}
 
-  /* botões simples */
-  .actions{display:flex;gap:10px;justify-content:center;margin-top:6px;}
-  .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700;}
-  .btn-primary{background:linear-gradient(90deg,var(--accent),#1d4ed8);color:#fff;}
-  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);}
+  .panel .row{display:flex;flex-direction:column;gap:6px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.02);}
+  .panel .row:last-child{border-bottom:none;padding-bottom:0}
 
-  /* aviso expirado */
-  .expired { color:var(--danger); font-weight:800; text-align:center; margin-top:8px; }
+  .panel .actions{display:flex;gap:8px;margin-top:12px;}
+  .btn { padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700; }
+  .btn-ghost { background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text); }
+  .btn-danger { background:var(--danger); color:#080808; }
+  .btn-primary { background:linear-gradient(90deg,var(--accent),#1d4ed8); color:#fff; }
 
-  @media (max-width:520px){ .greet { font-size:24px; } .label{min-width:90px;} }
+  /* expired overlay full */
+  .expired-overlay {
+    position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+    background:rgba(0,0,0,0.95); padding:22px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:none;z-index:1001;text-align:center;
+  }
+  .expired-overlay h2{margin:0 0 8px 0;color:var(--danger);}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:8px;}
+
+  @media (max-width:520px) {
+    .panel{width:92%; margin:12px;}
+    .big{font-size:20px}
+  }
 </style>
 </head>
 <body>
-  <div class="container" role="main" aria-labelledby="title">
-    <!-- Simples painel: ou mostra os detalhes se autorizado, ou apenas saudação -->
-    <div id="panel" class="card">
-      <!-- inicial minimal -->
-      <div id="simpleView" class="simple" style="display:none;">
-        <h1 class="greet" id="greetText">Olá</h1>
-        <p class="sub" id="greetSub">Bem-vindo à tua área.</p>
-        <div class="actions">
-          <button id="btnRefresh" class="btn btn-ghost" type="button">Actualizar</button>
-          <button id="btnLogout" class="btn btn-ghost" type="button">Logout</button>
+  <div class="app" role="application" aria-label="App aberto">
+    <header class="topbar" role="banner">
+      <div class="left">
+        <button id="btnUser" class="btn-icon" aria-label="Abrir utilizador">
+          <span class="material-icons-round" style="font-size:22px;color:var(--text)">account_circle</span>
+        </button>
+        <div>
+          <div class="title">Área</div>
+          <div class="small" style="font-size:12px;color:var(--muted)">Sessão</div>
         </div>
       </div>
 
-      <div id="detailView" style="display:none;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <h2 id="u_fullName" style="margin:0;font-size:20px;font-weight:800;"></h2>
-            <div class="sub" id="u_username" style="margin-top:6px;"></div>
-          </div>
-          <div style="text-align:right;">
-            <div class="sub">Status</div>
-            <div id="u_access_badge" class="value" style="margin-top:6px;"></div>
-          </div>
+      <div class="right" aria-hidden="false">
+        <div style="text-align:right">
+          <div class="expire" id="expireLabel">Expira em: —</div>
+          <div class="countdown" id="topCountdown">--:--:--</div>
         </div>
+      </div>
+    </header>
 
-        <div class="info" style="margin-top:14px;">
-          <div class="row"><div class="label">Email</div><div id="u_email" class="value"></div></div>
-          <div class="row"><div class="label">Telefone</div><div id="u_phone" class="value"></div></div>
-          <div class="row"><div class="label">Idade</div><div id="u_age" class="value"></div></div>
-          <div class="row"><div class="label">Experiência</div><div id="u_exp" class="value"></div></div>
-
-          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:6px 0;" />
-
-          <div class="row"><div class="label">Expira em</div><div id="u_expire" class="value"></div></div>
-          <div class="row"><div class="label">Tempo restante</div><div id="u_countdown" class="countdown">--:--:--</div></div>
+    <main class="main" role="main">
+      <div class="card" id="mainCard" aria-live="polite">
+        <div class="big" id="welcomeTitle">Bem-vindo</div>
+        <p class="small" id="welcomeSub">Conteúdo da aplicação — esta é a tela principal.</p>
+        <!-- aqui podes colocar o conteúdo principal (gráficos, links, etc) -->
+        <div style="margin-top:12px;">
+          <button id="btnRefreshMain" class="btn btn-ghost">Actualizar</button>
+          <button id="btnLogoutMain" class="btn btn-ghost">Logout</button>
         </div>
+      </div>
+    </main>
+  </div>
 
-        <div class="actions" style="margin-top:16px;">
-          <button id="btnBack" class="btn btn-ghost" type="button">Voltar</button>
-          <button id="btnLogout2" class="btn btn-primary" type="button">Logout</button>
+  <!-- Panel overlay (user details) -->
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="panel" role="document" aria-labelledby="panelTitle">
+      <div class="h">
+        <div>
+          <div id="panelTitle" style="font-weight:800;font-size:16px">Utilizador</div>
+          <div class="label" id="panelSub">Informações da conta</div>
         </div>
+        <button id="btnClosePanel" class="btn btn-ghost" aria-label="Fechar painel">Fechar</button>
+      </div>
 
-        <div id="expiredNotice" class="expired" style="display:none;">Conta expirada — acesso bloqueado</div>
+      <!-- rows com os dados -->
+      <div id="panelContent">
+        <div class="row"><div class="label">Nome</div><div class="val" id="p_name">—</div></div>
+        <div class="row"><div class="label">Username</div><div class="val" id="p_user">—</div></div>
+        <div class="row"><div class="label">Email</div><div class="val" id="p_email">—</div></div>
+        <div class="row"><div class="label">Telefone</div><div class="val" id="p_phone">—</div></div>
+        <div class="row"><div class="label">Experiência</div><div class="val" id="p_exp">—</div></div>
+        <div class="row"><div class="label">Expira</div><div class="val" id="p_expire">—</div></div>
+        <div class="row"><div class="label">Tempo restante</div><div class="val" id="p_countdown">--:--:--</div></div>
+
+        <div class="actions">
+          <button id="btnLogoutPanel" class="btn btn-danger">Terminar sessão</button>
+          <button id="btnClosePanel2" class="btn btn-ghost">Fechar</button>
+        </div>
+      </div>
+
+      <div id="panelSimple" style="display:none;">
+        <div class="row"><div class="label">Sessão</div><div class="val" id="simpleName">—</div></div>
+        <div class="actions">
+          <button id="btnLogoutSimple" class="btn btn-ghost">Logout</button>
+          <button id="btnCloseSimple" class="btn btn-ghost">Fechar</button>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- expired overlay -->
+  <div id="expiredOverlay" class="expired-overlay" role="alert" aria-live="assertive" style="display:none;">
+    <h2>Sessão terminada</h2>
+    <div class="muted-note">A sessão expirou. Será redirecionado para o ecrã de login.</div>
+  </div>
+
 <script>
-/*
-  open.html (simplificado)
-  - Mostra detalhes somente se user.email === 'exemplo1@mail.com'
-  - Identificação por:
-     1) localStorage.logged_user_email
-     2) query param ?email=
-     3) localStorage.logged_user (username) ou ?u=... -> resolve para email consultando API
-  - Caso contrário apresenta só saudação e botões simples.
+/* open.html melhorado:
+ - só mostra dados completos quando logged_user_email === 'exemplo1@mail.com'
+ - topo esquerdo abre painel com dados (ou saudação simples)
+ - mostra data de expiração e contador no topo
+ - encerra sessão automaticamente quando expira (limpa localStorage e redireciona)
+ - lê email de: localStorage.logged_user_email, query ?email=, fallback localStorage.logged_user (username)
 */
 
 const API_URL = 'https://alfredoooh.github.io/explorer-api/docs/users1.json';
-const SHOW_EMAIL = 'exemplo1@mail.com'; // email que tem acesso detalhado (exigido pelo utilizador)
-const getEl = id => document.getElementById(id);
+const AUTH_EMAIL = 'exemplo1@mail.com'; // conta autorizada para mostrar info
 
-const simpleView = getEl('simpleView');
-const detailView = getEl('detailView');
+// dom
+const btnUser = document.getElementById('btnUser');
+const overlay = document.getElementById('overlay');
+const btnClosePanel = document.getElementById('btnClosePanel');
+const btnClosePanel2 = document.getElementById('btnClosePanel2');
+const btnLogoutPanel = document.getElementById('btnLogoutPanel');
+const panelContent = document.getElementById('panelContent');
+const panelSimple = document.getElementById('panelSimple');
 
-const greetText = getEl('greetText');
-const greetSub = getEl('greetSub');
+const p_name = document.getElementById('p_name');
+const p_user = document.getElementById('p_user');
+const p_email = document.getElementById('p_email');
+const p_phone = document.getElementById('p_phone');
+const p_exp = document.getElementById('p_exp');
+const p_expire = document.getElementById('p_expire');
+const p_countdown = document.getElementById('p_countdown');
 
-const u_fullName = getEl('u_fullName');
-const u_username = getEl('u_username');
-const u_email = getEl('u_email');
-const u_phone = getEl('u_phone');
-const u_age = getEl('u_age');
-const u_exp = getEl('u_exp');
-const u_expire = getEl('u_expire');
-const u_countdown = getEl('u_countdown');
-const u_access_badge = getEl('u_access_badge');
-const expiredNotice = getEl('expiredNotice');
+const simpleName = document.getElementById('simpleName');
 
-const btnRefresh = getEl('btnRefresh');
-const btnLogout = getEl('btnLogout');
-const btnBack = getEl('btnBack');
-const btnLogout2 = getEl('btnLogout2');
+const expireLabel = document.getElementById('expireLabel');
+const topCountdown = document.getElementById('topCountdown');
+
+const btnRefreshMain = document.getElementById('btnRefreshMain');
+const btnLogoutMain = document.getElementById('btnLogoutMain');
+
+const expiredOverlay = document.getElementById('expiredOverlay');
 
 let users = [];
-let currentUser = null;
-let countdownTimer = null;
+let current = null;
+let topTimer = null;
+let panelTimer = null;
 
-/* util: query param */
-function q(name) {
-  return new URLSearchParams(window.location.search).get(name);
-}
+/* helpers */
+const qs = (k) => new URLSearchParams(window.location.search).get(k);
 
-/* parse expires object -> Date or null */
 function parseExpires(ex) {
   if (!ex) return null;
-  const y = ex.year || ex.y;
-  const m = ('month' in ex) ? ex.month : (ex.m || null);
+  const y = ex.year || ex.y; if (!y) return null;
+  const m = ('month' in ex) ? ex.month : (ex.m || null); if (!m) return null;
   const d = ex.day || ex.d || 1;
   const hh = ex.hours || ex.h || 0;
   const mm = ex.minutes || ex.min || 0;
-  if (!y || !m) return null;
-  return new Date(y, m - 1, d, hh || 0, mm || 0, 0);
+  return new Date(y, m - 1, d, hh, mm, 0);
+}
+function pad(n){ return String(n).padStart(2,'0'); }
+function durationToString(diff){
+  if (diff <= 0) return '00:00:00';
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const secs = Math.floor((diff % (1000*60)) / 1000);
+  return (days>0 ? `${days}d ` : '') + `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
 }
 
-/* countdown update */
-function startCountdown(expDate) {
-  if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
-  if (!expDate) {
-    u_countdown.textContent = '—';
-    return;
-  }
-  function upd() {
-    const now = new Date();
-    const diff = expDate - now;
-    if (diff <= 0) {
-      u_countdown.textContent = '00:00:00';
-      expiredNotice.style.display = 'block';
-      u_access_badge.textContent = 'Sem acesso';
-      clearInterval(countdownTimer);
-      countdownTimer = null;
-      return;
-    }
-    expiredNotice.style.display = 'none';
-    const days = Math.floor(diff / (1000*60*60*24));
-    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-    const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
-    const secs = Math.floor((diff % (1000*60)) / 1000);
-    const pad = n => String(n).padStart(2,'0');
-    u_countdown.textContent = (days > 0 ? `${days}d ` : '') + `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
-  }
-  upd();
-  countdownTimer = setInterval(upd, 1000);
+/* fetch users */
+async function fetchUsers(){
+  const res = await fetch(API_URL, {cache:'no-store'});
+  if(!res.ok) throw new Error('Falha a carregar API: ' + res.status);
+  const data = await res.json();
+  users = Array.isArray(data) ? data : (data.users || []);
+  return users;
 }
 
-/* render minimal greeting view */
-function showSimpleView(name) {
-  detailView.style.display = 'none';
-  simpleView.style.display = 'flex';
-  greetText.textContent = name ? `Olá, ${name}` : 'Olá';
-  greetSub.textContent = 'Sessão iniciada. Apenas opções básicas disponíveis.';
+/* resolve identity:
+ order:
+ 1) localStorage.logged_user_email
+ 2) query ?email=
+ 3) localStorage.logged_user (username) or ?u=
+*/
+function resolveIdentity(){
+  const sEmail = localStorage.getItem('logged_user_email');
+  const sUser = localStorage.getItem('logged_user');
+  const qEmail = qs('email');
+  const qUser = qs('u');
+
+  if (sEmail) return { email: sEmail };
+  if (qEmail) return { email: qEmail };
+  if (sUser) return { username: sUser };
+  if (qUser) return { username: qUser };
+  return null;
 }
 
-/* render detailed user view */
-function showDetailView(user) {
-  simpleView.style.display = 'none';
-  detailView.style.display = 'block';
-  u_fullName.textContent = user.fullName || user.username || '—';
-  u_username.textContent = '@' + (user.username || '—');
-  u_email.textContent = user.email || '—';
-  u_phone.textContent = user.phone || '—';
-  u_age.textContent = (user.age !== undefined ? String(user.age) : '—');
-  u_exp.textContent = user.experience || '—';
-  u_access_badge.textContent = (user.access === false ? 'Sem acesso' : 'Com acesso');
-  const expDate = parseExpires(user.expires);
-  u_expire.textContent = expDate ? expDate.toLocaleString() : '—';
-  startCountdown(expDate);
-}
-
-/* find user in array by username or email */
-function findUser(list, {username, email}) {
-  if (!list || !list.length) return null;
+/* find user by email/username */
+function findUser({email, username}){
+  if (!users || !users.length) return null;
   if (email) {
-    const byEmail = list.find(u => String(u.email || '').toLowerCase() === String(email).toLowerCase());
-    if (byEmail) return byEmail;
+    const f = users.find(u => String(u.email||'').toLowerCase() === String(email).toLowerCase());
+    if (f) return f;
   }
   if (username) {
-    const byUser = list.find(u => String(u.username || '').toLowerCase() === String(username).toLowerCase());
-    if (byUser) return byUser;
+    const f = users.find(u => String(u.username||'').toLowerCase() === String(username).toLowerCase());
+    if (f) return f;
   }
   return null;
 }
 
-/* main flow: try to determine identity and render accordingly */
-async function init() {
-  // try localStorage email first
-  const storedEmail = localStorage.getItem('logged_user_email');
-  const storedUser = localStorage.getItem('logged_user'); // username
-  const emailParam = q('email');
-  const usernameParam = q('u');
+/* show top expiry + start top countdown */
+function setTopExpiry(expDate){
+  if(!expDate){ expireLabel.textContent = 'Expira em: —'; topCountdown.textContent='--:--:--'; return; }
+  expireLabel.textContent = 'Expira em: ' + expDate.toLocaleString();
+  if (topTimer) clearInterval(topTimer);
+  function tick(){
+    const diff = expDate - new Date();
+    topCountdown.textContent = durationToString(diff);
+    if (diff <= 0) {
+      // expire now
+      doAutoLogout();
+    }
+  }
+  tick();
+  topTimer = setInterval(tick,1000);
+}
 
-  // if we already know storedEmail and it is NOT the special, show simple
-  if (storedEmail && storedEmail.toLowerCase() !== SHOW_EMAIL.toLowerCase()) {
-    showSimpleView(storedEmail);
+/* panel countdown */
+function setPanelCountdown(expDate){
+  if (panelTimer) clearInterval(panelTimer);
+  if (!expDate){ p_countdown.textContent = '--:--:--'; return; }
+  function tick(){
+    const diff = expDate - new Date();
+    p_countdown.textContent = durationToString(diff);
+    if (diff <= 0) {
+      p_countdown.textContent = '00:00:00';
+      // also auto logout
+      doAutoLogout();
+    }
+  }
+  tick();
+  panelTimer = setInterval(tick,1000);
+}
+
+/* auto logout */
+function doAutoLogout(){
+  // show expired overlay then clear storage and redirect
+  if (topTimer) clearInterval(topTimer);
+  if (panelTimer) clearInterval(panelTimer);
+
+  expiredOverlay.style.display = 'block';
+  // quick delay so user sees message
+  setTimeout(() => {
+    try {
+      localStorage.removeItem('logged_user');
+      localStorage.removeItem('logged_user_email');
+    } catch(e){}
+    window.location.href = 'index.html';
+  }, 1800);
+}
+
+/* open/close panel */
+function openPanelFor(user){
+  if (!user) {
+    // simple view
+    panelContent.style.display = 'none';
+    panelSimple.style.display = 'block';
+    simpleName.textContent = (localStorage.getItem('logged_user_email') || localStorage.getItem('logged_user') || '—');
+  } else {
+    panelContent.style.display = 'block';
+    panelSimple.style.display = 'none';
+
+    p_name.textContent = user.fullName || '—';
+    p_user.textContent = '@' + (user.username || '—');
+    p_email.textContent = user.email || '—';
+    p_phone.textContent = user.phone || '—';
+    p_exp.textContent = user.experience || '—';
+    const expDate = parseExpires(user.expires);
+    p_expire.textContent = expDate ? expDate.toLocaleString() : '—';
+    setPanelCountdown(expDate);
+  }
+  overlay.style.display = 'flex';
+  overlay.setAttribute('aria-hidden','false');
+}
+function closePanel(){
+  overlay.style.display = 'none';
+  overlay.setAttribute('aria-hidden','true');
+  // clear countdown in panel
+  if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
+}
+
+/* logout helper */
+function logoutAndRedirect(){
+  try {
+    localStorage.removeItem('logged_user');
+    localStorage.removeItem('logged_user_email');
+  } catch(e){}
+  window.location.href = 'index.html';
+}
+
+/* init app */
+async function init(){
+  try {
+    await fetchUsers();
+  } catch(e) {
+    // cannot load API — force back to login
+    console.error(e);
+    alert('Erro ao carregar dados. Voltando ao login.');
+    logoutAndRedirect();
     return;
   }
 
-  // if we have storedEmail and it equals SHOW_EMAIL, fetch API to get full data and show detail
-  // else if we have usernameParam or storedUser or emailParam, fetch API and try to resolve
-  try {
-    const resp = await fetch(API_URL, {cache: 'no-store'});
-    if (!resp.ok) throw new Error('Falha ao carregar API: ' + resp.status);
-    const data = await resp.json();
-    users = Array.isArray(data) ? data : (data.users || []);
+  // resolve identity
+  const id = resolveIdentity();
+  if (!id) {
+    // nothing known — force to login
+    logoutAndRedirect();
+    return;
+  }
 
-    // resolution order for email:
-    let emailToCheck = storedEmail || emailParam || null;
-    let usernameToCheck = storedUser || usernameParam || null;
+  const user = findUser(id);
+  // if we couldn't find by email/username -> send back to login
+  if (!user) {
+    logoutAndRedirect();
+    return;
+  }
 
-    let user = null;
-    if (emailToCheck) {
-      user = findUser(users, { email: emailToCheck });
+  current = user;
+
+  // Decide behavior: only show full info if current.email === AUTH_EMAIL
+  const authorized = (String(user.email||'').toLowerCase() === AUTH_EMAIL.toLowerCase());
+
+  // set top expiry (either real or blank)
+  const expDate = parseExpires(user.expires);
+  setTopExpiry(expDate);
+
+  // adjust main content
+  const welcomeTitle = document.getElementById('welcomeTitle');
+  const welcomeSub = document.getElementById('welcomeSub');
+
+  if (authorized) {
+    welcomeTitle.textContent = `Olá, ${user.fullName || user.username}`;
+    welcomeSub.textContent = `Sessão ativa para ${user.email}. Acessa os teus dados no botão superior esquerdo.`;
+    // also save email for convenience
+    try { localStorage.setItem('logged_user_email', user.email || ''); localStorage.setItem('logged_user', user.username || ''); } catch(e){}
+  } else {
+    welcomeTitle.textContent = `Olá`;
+    welcomeSub.textContent = `Informações privadas não disponíveis para esta conta.`;
+    try { localStorage.setItem('logged_user', user.username || ''); } catch(e){}
+  }
+
+  // attach open panel behavior
+  btnUser.onclick = () => {
+    if (authorized) openPanelFor(user);
+    else openPanelFor(null); // simple panel with greeting + logout
+  };
+
+  // keep top countdown running (already started)
+
+  // button actions
+  btnClosePanel.onclick = closePanel;
+  btnClosePanel2.onclick = closePanel;
+  document.getElementById('btnLogoutPanel').onclick = logoutAndRedirect;
+  document.getElementById('btnLogoutSimple').onclick = logoutAndRedirect;
+  document.getElementById('btnCloseSimple').onclick = closePanel;
+
+  btnRefreshMain.onclick = async () => {
+    // re-fetch and refresh data and timers
+    try {
+      await fetchUsers();
+      const latest = findUser({ username: user.username, email: user.email });
+      if (latest) {
+        current = latest;
+        const exp = parseExpires(latest.expires);
+        setTopExpiry(exp);
+        if (overlay.style.display === 'flex' && panelContent.style.display === 'block') {
+          // if panel open, refresh panel fields
+          p_name.textContent = latest.fullName || '—';
+          p_user.textContent = '@' + (latest.username || '—');
+          p_email.textContent = latest.email || '—';
+          p_phone.textContent = latest.phone || '—';
+          p_exp.textContent = latest.experience || '—';
+          p_expire.textContent = exp ? exp.toLocaleString() : '—';
+          setPanelCountdown(exp);
+        }
+      }
+    } catch(e){
+      console.error(e);
     }
-    if (!user && usernameToCheck) {
-      user = findUser(users, { username: usernameToCheck });
-      if (user && !emailToCheck) emailToCheck = user.email;
-    }
+  };
 
-    // if we resolved a user and their email exactly matches the special email, show detail
-    if (user && user.email && String(user.email).toLowerCase() === SHOW_EMAIL.toLowerCase()) {
-      currentUser = user;
-      showDetailView(user);
-      // store convenience for future loads (optional)
-      try { localStorage.setItem('logged_user', user.username || ''); localStorage.setItem('logged_user_email', user.email || ''); } catch(e){}
-      return;
-    }
+  btnLogoutMain.onclick = logoutAndRedirect;
 
-    // if email param explicitly equals special, but user not found yet, try to show simple with email
-    if ((emailParam && String(emailParam).toLowerCase() === SHOW_EMAIL.toLowerCase()) && !user) {
-      // attempt to find by email again
-      user = findUser(users, { email: emailParam });
-      if (user) { currentUser = user; showDetailView(user); return; }
-    }
-
-    // otherwise: show simple greeting (use full name if known via resolved user or stored values)
-    const nameForGreet = (user && user.fullName) || (storedUser) || (emailParam) || null;
-    showSimpleView(nameForGreet);
-
-  } catch (err) {
-    // on error, degrade to simple view and log error
-    console.error(err);
-    showSimpleView(null);
+  // safety: if already expired on load, auto logout
+  if (expDate && new Date() >= expDate) {
+    setTimeout(() => doAutoLogout(), 400);
   }
 }
 
-/* actions */
-btnRefresh.addEventListener('click', () => init());
-btnLogout.addEventListener('click', () => {
-  localStorage.removeItem('logged_user');
-  localStorage.removeItem('logged_user_email');
-  // redirect to login page (mudar se necessário)
-  window.location.href = 'index.html';
-});
-btnBack.addEventListener('click', () => {
-  // voltar para vista simples
-  showSimpleView((currentUser && currentUser.fullName) || null);
-});
-btnLogout2.addEventListener('click', () => {
-  localStorage.removeItem('logged_user');
-  localStorage.removeItem('logged_user_email');
-  window.location.href = 'index.html';
+/* wire overlay click outside to close */
+overlay.addEventListener('click', (e) => {
+  if (e.target === overlay) closePanel();
 });
 
-/* init */
+// init
 init();
 </script>
 </body>
